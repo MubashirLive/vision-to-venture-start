@@ -104,22 +104,39 @@ export default function Home() {
             />
           )}
           {(primaryRole === "principal" || primaryRole === "admin") && (
-            <DashboardCard icon={Users} title="People" desc="Students, teachers & staff" to="/people" />
+            <DashboardCard
+              icon={Users}
+              title="People"
+              desc="Students, teachers & staff"
+              to="/people"
+              disabled={!school?.onboarding_completed}
+            />
           )}
-          <Card className="opacity-60">
-            <CardHeader>
-              <ClipboardCheck className="h-5 w-5 text-muted-foreground" />
-              <CardTitle className="text-base mt-2">Attendance</CardTitle>
-              <CardDescription>Coming next — daily attendance tracking</CardDescription>
-            </CardHeader>
-          </Card>
+          <DashboardCard
+            icon={ClipboardCheck}
+            title="Attendance"
+            desc={school?.onboarding_completed ? "Daily attendance tracking" : "Available after onboarding"}
+            to="/attendance"
+            disabled={!school?.onboarding_completed}
+          />
         </section>
       </div>
     </AppShell>
   );
 }
 
-function DashboardCard({ icon: Icon, title, desc, to }: { icon: any; title: string; desc: string; to: string }) {
+function DashboardCard({ icon: Icon, title, desc, to, disabled }: { icon: any; title: string; desc: string; to: string; disabled?: boolean }) {
+  if (disabled) {
+    return (
+      <Card className="h-full opacity-50 cursor-not-allowed">
+        <CardHeader>
+          <Icon className="h-5 w-5 text-muted-foreground" />
+          <CardTitle className="text-base mt-2">{title}</CardTitle>
+          <CardDescription>{desc}</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
   return (
     <Link to={to} className="group">
       <Card className="h-full transition-all group-hover:shadow-elegant group-hover:-translate-y-0.5">
