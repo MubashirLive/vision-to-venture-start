@@ -9,9 +9,10 @@ import type { SchoolStepData } from "./types";
 interface Props {
   data: SchoolStepData;
   onChange: (d: SchoolStepData) => void;
+  errors?: Partial<Record<keyof SchoolStepData, string>>;
 }
 
-export function SchoolStep({ data, onChange }: Props) {
+export function SchoolStep({ data, onChange, errors = {} }: Props) {
   const set = <K extends keyof SchoolStepData>(k: K, v: SchoolStepData[K]) =>
     onChange({ ...data, [k]: v });
 
@@ -24,25 +25,26 @@ export function SchoolStep({ data, onChange }: Props) {
   return (
     <div className="space-y-4">
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="School Name *">
-          <Input value={data.name} onChange={(e) => set("name", e.target.value)} />
+        <Field label="School Name *" error={errors.name}>
+          <Input value={data.name} onChange={(e) => set("name", e.target.value)} aria-invalid={!!errors.name} />
         </Field>
-        <Field label="Acronym *">
-          <Input value={data.acronym} maxLength={10} placeholder="e.g. DPS" onChange={(e) => set("acronym", e.target.value.toUpperCase())} />
+        <Field label="Acronym *" error={errors.acronym}>
+          <Input value={data.acronym} maxLength={10} placeholder="e.g. DPS"
+            onChange={(e) => set("acronym", e.target.value.toUpperCase())} aria-invalid={!!errors.acronym} />
         </Field>
       </div>
 
-      <Field label="Address *">
-        <Input value={data.address} onChange={(e) => set("address", e.target.value)} />
+      <Field label="Address *" error={errors.address}>
+        <Input value={data.address} onChange={(e) => set("address", e.target.value)} aria-invalid={!!errors.address} />
       </Field>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="City *">
-          <Input value={data.city} onChange={(e) => set("city", e.target.value)} />
+        <Field label="City *" error={errors.city}>
+          <Input value={data.city} onChange={(e) => set("city", e.target.value)} aria-invalid={!!errors.city} />
         </Field>
-        <Field label="State *">
+        <Field label="State *" error={errors.state}>
           <Select value={data.state} onValueChange={(v) => set("state", v)}>
-            <SelectTrigger><SelectValue placeholder="Select state" /></SelectTrigger>
+            <SelectTrigger aria-invalid={!!errors.state}><SelectValue placeholder="Select state" /></SelectTrigger>
             <SelectContent className="max-h-72">
               {INDIAN_STATES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
             </SelectContent>
@@ -51,30 +53,31 @@ export function SchoolStep({ data, onChange }: Props) {
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Contact Number *">
+        <Field label="Contact Number *" error={errors.contact_phone}>
           <Input
             value={data.contact_phone}
             placeholder="+91 9876543210"
             onChange={(e) => set("contact_phone", e.target.value)}
+            aria-invalid={!!errors.contact_phone}
           />
         </Field>
-        <Field label="Email *">
-          <Input type="email" value={data.contact_email} onChange={(e) => set("contact_email", e.target.value)} />
+        <Field label="Email *" error={errors.contact_email}>
+          <Input type="email" value={data.contact_email} onChange={(e) => set("contact_email", e.target.value)} aria-invalid={!!errors.contact_email} />
         </Field>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Academic Board *">
+        <Field label="Academic Board *" error={errors.board}>
           <Select value={data.board} onValueChange={(v) => set("board", v)}>
-            <SelectTrigger><SelectValue placeholder="Select board" /></SelectTrigger>
+            <SelectTrigger aria-invalid={!!errors.board}><SelectValue placeholder="Select board" /></SelectTrigger>
             <SelectContent>
               {ACADEMIC_BOARDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
         </Field>
-        <Field label="School Type *">
+        <Field label="School Type *" error={errors.school_type}>
           <Select value={data.school_type} onValueChange={(v) => set("school_type", v)}>
-            <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+            <SelectTrigger aria-invalid={!!errors.school_type}><SelectValue placeholder="Select type" /></SelectTrigger>
             <SelectContent>
               {SCHOOL_TYPES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
             </SelectContent>
@@ -106,11 +109,12 @@ export function SchoolStep({ data, onChange }: Props) {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, error }: { label: string; children: React.ReactNode; error?: string }) {
   return (
     <div className="space-y-1.5">
-      <Label>{label}</Label>
+      <Label className={error ? "text-destructive" : undefined}>{label}</Label>
       {children}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

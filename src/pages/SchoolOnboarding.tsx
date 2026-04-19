@@ -45,6 +45,7 @@ export default function SchoolOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [schoolErrors, setSchoolErrors] = useState<Record<string, string>>({});
   const [data, setData] = useState<WizardData>({
     school: {
       name: school?.name ?? "",
@@ -74,7 +75,14 @@ export default function SchoolOnboarding() {
   const validateStep = (): boolean => {
     if (step === 0) {
       const r = schoolSchema.safeParse(data.school);
-      if (!r.success) { toast({ title: "Fix errors", description: r.error.errors[0].message, variant: "destructive" }); return false; }
+      if (!r.success) {
+        const errs: Record<string, string> = {};
+        r.error.errors.forEach((e) => { if (e.path[0]) errs[String(e.path[0])] = e.message; });
+        setSchoolErrors(errs);
+        toast({ title: "Please fix the errors", description: "Required fields are missing or invalid.", variant: "destructive" });
+        return false;
+      }
+      setSchoolErrors({});
     }
     if (step === 1) {
       const r = sessionSchema.safeParse(data.session);
@@ -185,7 +193,7 @@ export default function SchoolOnboarding() {
         <Card>
           <CardHeader><CardTitle className="text-lg">Step {step + 1}: {STEPS[step]}</CardTitle></CardHeader>
           <CardContent>
-            {step === 0 && <SchoolStep data={data.school} onChange={(d) => setData({ ...data, school: d })} />}
+            {step === 0 && <SchoolStep data={data.school} onChange={(d) => setData({ ...data, school: d })} errors={schoolErrors} />}
             {step === 1 && <SessionStep data={data.session} onChange={(d) => setData({ ...data, session: d })} />}
             {step === 2 && <SubjectsStep data={data.session} onChange={(d) => setData({ ...data, session: d })} />}
             {step === 3 && <SummaryStep data={data} />}
