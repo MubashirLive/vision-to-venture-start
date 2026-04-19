@@ -7,13 +7,15 @@ export const INDIAN_STATES = [
   "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry",
 ] as const;
 
-export const ACADEMIC_BOARDS = ["CBSE", "ICSE", "State Board", "IB"] as const;
+export const ACADEMIC_BOARDS = ["CBSE", "ICSE", "State Board", "IB", "IGCSE"] as const;
 export const SCHOOL_TYPES = ["Private", "Public", "International"] as const;
 export const ACADEMIC_YEARS = ["2024-25", "2025-26", "2026-27"] as const;
-export const TERM_STRUCTURES = ["Term 1+2", "Semester 1+2", "Annual"] as const;
+export const TERM_STRUCTURES = ["Annual", "Term 1 & 2", "Semester 1 & 2"] as const;
 
 export const DEFAULT_CLASSES = [
-  "Nursery","LKG","UKG","1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th",
+  "Nursery","LKG","UKG",
+  "Class 1","Class 2","Class 3","Class 4","Class 5","Class 6",
+  "Class 7","Class 8","Class 9","Class 10","Class 11","Class 12",
 ];
 
 export const SUBJECT_CODE_MAP: Record<string, string> = {
