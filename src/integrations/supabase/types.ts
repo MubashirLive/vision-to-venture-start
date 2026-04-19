@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      academic_sessions: {
+        Row: {
+          academic_year: string
+          created_at: string
+          end_date: string
+          id: string
+          is_current: boolean
+          school_id: string
+          start_date: string
+          term_structure: string
+        }
+        Insert: {
+          academic_year: string
+          created_at?: string
+          end_date: string
+          id?: string
+          is_current?: boolean
+          school_id: string
+          start_date: string
+          term_structure: string
+        }
+        Update: {
+          academic_year?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          is_current?: boolean
+          school_id?: string
+          start_date?: string
+          term_structure?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_sessions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -51,6 +92,48 @@ export type Database = {
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          name: string
+          school_id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          name: string
+          school_id: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          name?: string
+          school_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "academic_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -134,10 +217,47 @@ export type Database = {
           },
         ]
       }
+      school_shifts: {
+        Row: {
+          created_at: string
+          end_time: string | null
+          id: string
+          name: string
+          school_id: string
+          start_time: string | null
+        }
+        Insert: {
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          name: string
+          school_id: string
+          start_time?: string | null
+        }
+        Update: {
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          name?: string
+          school_id?: string
+          start_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_shifts_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       schools: {
         Row: {
+          acronym: string | null
           address: string | null
           board: string | null
+          city: string | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string
@@ -147,13 +267,17 @@ export type Database = {
           name: string
           onboarding_completed: boolean
           primary_color: string | null
+          school_type: string | null
           slug: string
+          state: string | null
           updated_at: string
           wings: string[] | null
         }
         Insert: {
+          acronym?: string | null
           address?: string | null
           board?: string | null
+          city?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -163,13 +287,17 @@ export type Database = {
           name: string
           onboarding_completed?: boolean
           primary_color?: string | null
+          school_type?: string | null
           slug: string
+          state?: string | null
           updated_at?: string
           wings?: string[] | null
         }
         Update: {
+          acronym?: string | null
           address?: string | null
           board?: string | null
+          city?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -179,11 +307,94 @@ export type Database = {
           name?: string
           onboarding_completed?: boolean
           primary_color?: string | null
+          school_type?: string | null
           slug?: string
+          state?: string | null
           updated_at?: string
           wings?: string[] | null
         }
         Relationships: []
+      }
+      sections: {
+        Row: {
+          class_id: string
+          created_at: string
+          id: string
+          name: string
+          school_id: string
+        }
+        Insert: {
+          class_id: string
+          created_at?: string
+          id?: string
+          name: string
+          school_id: string
+        }
+        Update: {
+          class_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sections_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sections_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subjects: {
+        Row: {
+          class_id: string
+          code: string
+          created_at: string
+          id: string
+          name: string
+          school_id: string
+        }
+        Insert: {
+          class_id: string
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          school_id: string
+        }
+        Update: {
+          class_id?: string
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subjects_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

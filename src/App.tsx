@@ -11,6 +11,7 @@ import AuthPage from "./pages/Auth.tsx";
 import SuperAdmin from "./pages/SuperAdmin.tsx";
 import SchoolPage from "./pages/SchoolPage.tsx";
 import People from "./pages/People.tsx";
+import SchoolOnboarding from "./pages/SchoolOnboarding.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/super-admin" element={<ProtectedRoute allowedRoles={["super_admin"]}><SuperAdmin /></ProtectedRoute>} />
             <Route path="/school" element={<ProtectedRoute><SchoolPage /></ProtectedRoute>} />
+            <Route path="/school/onboarding" element={<ProtectedRoute allowedRoles={["principal","admin"]}><SchoolOnboarding /></ProtectedRoute>} />
             <Route path="/people" element={<ProtectedRoute allowedRoles={["principal","admin"]}><People /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function SchoolPage() {
   const { school } = useAuth();
@@ -32,9 +34,11 @@ export default function SchoolPage() {
             <Badge variant={school.onboarding_completed ? "default" : "secondary"}>
               {school.onboarding_completed ? "Complete" : "Pending"}
             </Badge>
-            <p className="text-xs text-muted-foreground mt-3">
-              Onboarding wizard (school details, classes, sections, subjects) is the next step we'll build.
-            </p>
+            {!school.onboarding_completed && (
+              <div className="mt-3">
+                <Button asChild size="sm"><Link to="/school/onboarding">Start onboarding wizard</Link></Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

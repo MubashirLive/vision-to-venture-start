@@ -80,7 +80,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <Button asChild>
-                <Link to="/school">Continue onboarding</Link>
+                <Link to="/school/onboarding">Continue onboarding</Link>
               </Button>
             </CardContent>
           </Card>
