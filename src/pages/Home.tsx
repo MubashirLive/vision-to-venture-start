@@ -18,7 +18,23 @@ const ROLE_LABEL: Record<string, string> = {
 };
 
 export default function Home() {
-  const { user, school, roles, isSuperAdmin, primaryRole } = useAuth();
+  const { user, school, roles, isSuperAdmin, primaryRole, refresh } = useAuth();
+  const [claiming, setClaiming] = useState(false);
+
+  const claimSuperAdmin = async () => {
+    setClaiming(true);
+    const { data, error } = await supabase.functions.invoke("claim-super-admin");
+    setClaiming(false);
+    if (error || (data as any)?.error) {
+      return toast({
+        title: "Could not claim",
+        description: (data as any)?.error ?? error?.message ?? "Failed",
+        variant: "destructive",
+      });
+    }
+    toast({ title: "You are now Super Admin" });
+    await refresh();
+  };
 
   return (
     <AppShell>
@@ -35,12 +51,20 @@ export default function Home() {
           <Card className="border-warning/40 bg-warning/5">
             <CardHeader className="flex-row items-start gap-3 space-y-0">
               <AlertCircle className="h-5 w-5 text-warning mt-0.5" />
-              <div>
+              <div className="flex-1">
                 <CardTitle className="text-base">No role assigned yet</CardTitle>
                 <CardDescription>
                   Your account exists but hasn't been linked to a school yet. Ask your school's Principal or
                   the Super Admin to invite you.
                 </CardDescription>
+                <div className="mt-3">
+                  <Button size="sm" variant="outline" onClick={claimSuperAdmin} disabled={claiming}>
+                    {claiming ? "Claiming…" : "I'm the platform owner — claim Super Admin"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    Only works once, for the very first user on the platform.
+                  </p>
+                </div>
               </div>
             </CardHeader>
           </Card>
